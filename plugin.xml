@@ -92,7 +92,7 @@
         <header-file src="src/ios/FirebaseDynamicLinksPlugin.h"/>
         <source-file src="src/ios/FirebaseDynamicLinksPlugin.m"/>
 
-        <framework src="Firebase/Core" type="podspec" spec="6.24.0"/>
+        <framework src="Firebase/Core" type="podspec" spec="7.8.1"/>
         <framework src="Firebase/DynamicLinks" type="podspec" spec="6.24.0"/>
     </platform>
 
