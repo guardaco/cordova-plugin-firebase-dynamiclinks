@@ -92,8 +92,15 @@
         <header-file src="src/ios/FirebaseDynamicLinksPlugin.h"/>
         <source-file src="src/ios/FirebaseDynamicLinksPlugin.m"/>
 
-        <framework src="Firebase/Core" type="podspec" spec="7.8.1"/>
-        <framework src="Firebase/DynamicLinks" type="podspec" spec="6.24.0"/>
+        <podspec>
+			<config>
+				<source url="https://cdn.cocoapods.org/"/>
+			</config>
+			<pods use-frameworks="true">
+				<pod name="Firebase/Core" spec="~>7.0.0"/>
+				<pod name="Firebase/DynamicLinks" spec="~>7.0.0"/>
+            </pods>
+		</podspec>
     </platform>
 
 </plugin>
