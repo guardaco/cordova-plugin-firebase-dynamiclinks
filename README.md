@@ -39,7 +39,7 @@ com.google.firebase:firebase-dynamic-links: 17.0.0
  
 ## Installation
 
-    $ cordova plugin add cordova-plugin-firebase-dynamiclinks --variable APP_DOMAIN="example.com" --variable PAGE_LINK_DOMAIN="example.page.link"
+    $ cordova plugin add https://github.com/guardaco/cordova-plugin-firebase-dynamiclinks --variable APP_DOMAIN="guarda.co" --variable PAGE_LINK_DOMAIN="multiwallet.page.link"
 
 Use variable `APP_DOMAIN` specify web URL where your app will start an activity to handle the link.
 
@@ -52,6 +52,12 @@ On Android you have to add `AndroidLaunchMode` setting in order to prevent creat
 ```xml
 <preference name="AndroidLaunchMode" value="singleTask" />
 ```
+
+On Android you have to test whether you react properly to URI in your app just specify app package and Activity:
+
+  $ adb shell am start -W -a android.intent.action.VIEW -d "https://multiwallet.page.link/iGuj" com.crypto.multiwallet/.MainActivity
+
+Also you need to install the app first in order to register the deeplink
 
 Firebase Dynamic Links SDK has an [unresolved bug](https://github.com/firebase/firebase-ios-sdk/issues/233) related to parsing `deepLink` for new app installs. In order to get it work your dynamic link MUST have an [app preview page](https://firebase.google.com/docs/dynamic-links/link-previews), which by default.
 
