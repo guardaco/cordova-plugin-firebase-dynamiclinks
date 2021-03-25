@@ -55,7 +55,7 @@ On Android you have to add `AndroidLaunchMode` setting in order to prevent creat
 
 On Android you have to test whether you react properly to URI in your app just specify app package and Activity:
 
-  $ adb shell am start -W -a android.intent.action.VIEW -d "https://multiwallet.page.link/iGuj" com.crypto.multiwallet/.MainActivity
+    $ adb shell am start -W -a android.intent.action.VIEW -d "https://multiwallet.page.link/iGuj" com.crypto.multiwallet/.MainActivity
 
 Also you need to install the app first in order to register the deeplink
 
