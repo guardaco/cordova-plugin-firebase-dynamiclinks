@@ -1,5 +1,6 @@
 #import "FirebaseDynamicLinksPlugin.h"
 
+static NSString*const LOG_TAG = @"FirebaseDynamicLinksPlugin";
 
 @implementation FirebaseDynamicLinksPlugin
 
@@ -10,7 +11,22 @@
 - (void)finishLaunching:(NSNotification *)notification {
    [FIROptions defaultOptions].deepLinkURLScheme = [[NSBundle mainBundle] bundleIdentifier];
     if(![FIRApp defaultApp]) {
-        [FIRApp configure];
+        // get GoogleService-Info.plist file path
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
+        // if file is successfully found, use it
+        if (filePath) {
+            [self _logMessage:@"GoogleService-Info.plist found, setup: [FIRApp configureWithOptions]"];
+            // create firebase configure options passing .plist as content
+            FIROptions *options = [[FIROptions alloc] initWithContentsOfFile:filePath];
+
+            // configure FIRApp with options
+            [FIRApp configureWithOptions:options];
+            
+        } else {
+            // no .plist found, try default App
+            [self _logError:@"GoogleService-Info.plist NOT FOUND, setup: [FIRApp defaultApp]"];
+            [FIRApp configure];
+        }
     }
     self.domainUriPrefix = [self.commandDelegate.settings objectForKey:[@"DYNAMIC_LINK_URIPREFIX" lowercaseString]];
 }
@@ -180,6 +196,39 @@
     } else {
         self.lastDynamicLinkData = data;
     }
+}
+- (void)_logError: (NSString*)msg
+{
+    NSLog(@"%@ ERROR: %@", LOG_TAG, msg);
+    NSString* jsString = [NSString stringWithFormat:@"console.error(\"%@: %@\")", LOG_TAG, [self escapeJavascriptString:msg]];
+    [self executeGlobalJavascript:jsString];
+}
+
+- (void)_logInfo: (NSString*)msg
+{
+    NSLog(@"%@ INFO: %@", LOG_TAG, msg);
+    NSString* jsString = [NSString stringWithFormat:@"console.info(\"%@: %@\")", LOG_TAG, [self escapeJavascriptString:msg]];
+    [self executeGlobalJavascript:jsString];
+}
+
+- (void)_logMessage: (NSString*)msg
+{
+    NSLog(@"%@ LOG: %@", LOG_TAG, msg);
+    NSString* jsString = [NSString stringWithFormat:@"console.log(\"%@: %@\")", LOG_TAG, [self escapeJavascriptString:msg]];
+    [self executeGlobalJavascript:jsString];
+}
+
+- (NSString*)escapeJavascriptString: (NSString*)str
+{
+    NSString* result = [str stringByReplacingOccurrencesOfString: @"\\\"" withString: @"\""];
+    result = [result stringByReplacingOccurrencesOfString: @"\"" withString: @"\\\""];
+    result = [result stringByReplacingOccurrencesOfString: @"\n" withString: @"\\\n"];
+    return result;
+}
+
+- (void)executeGlobalJavascript: (NSString*)jsString
+{
+    [self.commandDelegate evalJs:jsString];
 }
 
 @end
