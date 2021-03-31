@@ -101,6 +101,7 @@
 				<pod name="Firebase/DynamicLinks" spec="~>7.0.0"/>
             </pods>
 		</podspec>
+        <hook type="after_plugin_install" src="scripts/after_plugin_install.js" />
     </platform>
 
 </plugin>

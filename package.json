@@ -32,6 +32,10 @@
     "cordova-ios",
     "cordova-android"
   ],
-  "author": "Slobodan Milicevic (slobodan.milicevic1989@gmail.com)",
+  "dependencies": {
+    "xcode": "^3.0.1",
+    "xml-js": "^1.6.11"
+  },
+  "author": "",
   "license": "MIT"
 }
