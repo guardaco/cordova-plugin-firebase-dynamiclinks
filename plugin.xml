@@ -31,6 +31,11 @@
                 <param name="android-package" value="by.chemerisuk.cordova.firebase.FirebaseDynamicLinksPlugin"/>
             </feature>
         </config-file>
+        <config-file target="config.xml" parent="/*">
+            <preference name="AndroidLaunchMode" value="singleTask" />
+            <preference name="GradlePluginGoogleServicesEnabled" value="true" />
+            <preference name="GradlePluginGoogleServicesVersion" value="4.3.3" />
+        </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
             <intent-filter android:autoVerify="true">
