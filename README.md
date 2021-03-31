@@ -51,6 +51,7 @@ Use variable `FIREBASE_DYNAMIC_LINKS_VERSION` and `FIREBASE_CORE_VERSION` to ove
 On Android you have to add `AndroidLaunchMode` setting in order to prevent creating of multiple app activities:
 ```xml
 <preference name="AndroidLaunchMode" value="singleTask" />
+<preference name="GradlePluginGoogleServicesEnabled" value="true" />
 ```
 
 On Android you have to test whether you react properly to URI in your app just specify app package and Activity:
