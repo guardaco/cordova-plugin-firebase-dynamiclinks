@@ -13,7 +13,7 @@ var ANDROID_DIR = 'platforms/android';
 
 module.exports = function(context) {
   //get platform from the context supplied by cordova
-  var platforms = context.opts.platforms;
+  var platforms = context.opts.cordova.platforms;
   var appName = utils.getAppName();
 
   // Copy key files to their platform specific folders
