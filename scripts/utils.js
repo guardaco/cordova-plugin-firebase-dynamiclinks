@@ -17,7 +17,7 @@ utils.getAppName = function(){
 utils.getPluginId = function(context){
   return context.opts.plugin.id;
 }
-utils.directoryExists = function() {
+utils.directoryExists = function(dirPath) {
   try {
     return fs.statSync(path.resolve(dirPath)).isDirectory();
   } catch(e) {

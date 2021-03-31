@@ -19,7 +19,7 @@ module.exports = function(context) {
   // Copy key files to their platform specific folders
   if (platforms.indexOf('android') !== -1 && utils.directoryExists(ANDROID_DIR)) {
     utils.log('Preparing Firebase on Android');
-    utils.copyFile('google-services.json', '', ANDROID_DIR + '/app/', );
+    utils.copyFile('google-services.json', '', ANDROID_DIR + '/app/');
   }
 
   if(platforms.indexOf('ios') !== -1 && utils.directoryExists(IOS_DIR)){
