@@ -1,30 +1,31 @@
 #import "FirebaseDynamicLinksPlugin.h"
 
-
 @implementation FirebaseDynamicLinksPlugin
 
 - (void)pluginInitialize {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
-}
+    NSLog(@"Starting Firebase DynamicLinks plugin");
 
-- (void)finishLaunching:(NSNotification *)notification {
-   [FIROptions defaultOptions].deepLinkURLScheme = [[NSBundle mainBundle] bundleIdentifier];
-    if(![FIRApp defaultApp]) {
+    if (![FIRApp defaultApp]) {
         [FIRApp configure];
     }
-    self.domainUriPrefix = [self.commandDelegate.settings objectForKey:[@"DYNAMIC_LINK_URIPREFIX" lowercaseString]];
+
+    self.domainUriPrefix = [self.commandDelegate.settings objectForKey:[@"DOMAIN_URI_PREFIX" lowercaseString]];
+}
+
+- (void)getDynamicLink:(CDVInvokedUrlCommand *)command {
+    CDVPluginResult *pluginResult;
+    if (self.lastDynamicLinkData) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:self.lastDynamicLinkData];
+
+        self.lastDynamicLinkData = nil;
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)onDynamicLink:(CDVInvokedUrlCommand *)command {
     self.dynamicLinkCallbackId = command.callbackId;
-
-    if (self.lastDynamicLinkData) {
-        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:self.lastDynamicLinkData];
-        [pluginResult setKeepCallbackAsBool:YES];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.dynamicLinkCallbackId];
-
-        self.lastDynamicLinkData = nil;
-    }
 }
 
 - (void)createDynamicLink:(CDVInvokedUrlCommand *)command {
@@ -172,6 +173,14 @@
     [data setObject:(absoluteUrl ? absoluteUrl : @"") forKey:@"deepLink"];
     [data setObject:(minimumAppVersion ? minimumAppVersion : @"") forKey:@"minimumAppVersion"];
     [data setObject:(weakConfidence ? @"Weak" : @"Strong") forKey:@"matchType"];
+
+    // Hathway code change made to avoid a "phantom" empty deeplink from clobbering a valid deeplink on first launch after install.
+    // The incoming phantom deeplink seems to be associated with a JS script being run to detect the device locale, but
+    //  there doesn't seem to be a way to prevent that from running
+    // First identified in ticket PRG-1613
+    if ([[data objectForKey:@"deepLink"] isEqualToString:@""]) {
+        return;
+    }
 
     if (self.dynamicLinkCallbackId) {
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:data];
